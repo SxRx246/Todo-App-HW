@@ -15,11 +15,6 @@ public class CategoryController {
         this.categoryService = categoryService;
     }
 
-    @GetMapping("/hello")
-    public String hello() {
-        return "Hello World!";
-    }
-
     @GetMapping("/categories")
     public List<Category> getCategories() {
         System.out.println("Controller called getCategories() ==>");
