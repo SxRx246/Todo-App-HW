@@ -16,11 +16,14 @@ The `/hello` route is kept in a separate test application because it was part of
 
 ### Todo Application – Categories
 
-| Method | Route                          | Description           |
-| ------ | ------------------------------ | --------------------- |
-| GET    | `/api/categories/`             | Get all categories    |
-| POST   | `/api/categories/`             | Create a new category |
-| GET    | `/api/categories/{categoryId}` | Get a category by ID  |
+| Method | Route                          | Description             |
+| ------ | ------------------------------ | ---------------------   |
+| GET    | `/api/categories/`             | Get all categories      |
+| POST   | `/api/categories/`             | Create a new category   |
+| GET    | `/api/categories/{categoryId}` | Get a category by ID    |
+| PUT    | `/api/categories/{categoryId}` | Update a category by ID |
+| DELETE | `/api/categories/{categoryId}` | Delete a category by ID |
+
 
 ## Steps Completed
 

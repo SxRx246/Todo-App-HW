@@ -32,4 +32,17 @@ public class CategoryController {
         System.out.println("Controller called createCategory() ==>");
         return categoryService.createCategory(category);
     }
+
+    @PutMapping("/categories/{id}")
+    public Category updateCategory(@PathVariable Long id, @RequestBody Category category ){
+        System.out.println("Controller called updateCategory() ==>");
+        return categoryService.updateCategory(id, category);
+    }
+
+    @DeleteMapping("/categories/{id}")
+    public Category deleteCategory(@PathVariable Long id){
+        System.out.println("Controller called deleteCategory() ==>");
+        return categoryService.deleteCategory(id);
+    }
+
 }
