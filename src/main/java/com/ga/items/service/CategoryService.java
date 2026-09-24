@@ -66,7 +66,7 @@ public class CategoryService {
                 );
 
         categoryRepository.deleteById(id);
-        System.out.println("category with id "+ id + "has been deleted successfully");
+        System.out.println("category with id "+ id + " has been deleted successfully");
         return category;
     }
 }
