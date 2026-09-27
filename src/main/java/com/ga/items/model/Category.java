@@ -21,7 +21,7 @@ public class Category {
     private String name;
     private String description;
 
-    @OneToMany(fetch = FetchType.EAGER,cascade = CascadeType.ALL, mappedBy = "category", orphanRemoval = true)
+    @OneToMany(fetch = FetchType.LAZY,cascade = CascadeType.ALL, mappedBy = "category", orphanRemoval = true)
     private List<Item> itemList;
 
     @JsonIgnore

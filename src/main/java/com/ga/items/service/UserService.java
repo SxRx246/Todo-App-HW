@@ -5,18 +5,45 @@ import com.ga.items.model.Category;
 import com.ga.items.model.Item;
 import com.ga.items.model.User;
 import com.ga.items.model.UserProfile;
+import com.ga.items.model.request.LoginRequest;
+import com.ga.items.model.response.LoginResponse;
 import com.ga.items.repository.UserRepository;
+import com.ga.items.security.JWTUtils;
+import com.ga.items.security.MyUserDetails;
 import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 
 @Service
-@AllArgsConstructor
 public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final JWTUtils jwtUtils;
+    private final AuthenticationManager authenticationManager;
+    private MyUserDetails myUserDetails;
+
+    @Autowired
+    public UserService(UserRepository userRepository,
+                       @Lazy PasswordEncoder passwordEncoder,
+                       JWTUtils jwtUtil,
+                       @Lazy AuthenticationManager authenticationManager,
+                       @Lazy MyUserDetails myUserDetails
+    ){
+        this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
+        this.jwtUtils = jwtUtil;
+        this.authenticationManager = authenticationManager;
+        this.myUserDetails = myUserDetails;
+    }
 
     public User createUser(User userObject) {
         System.out.println("Calling createUser() ==>");
@@ -51,4 +78,31 @@ public class UserService {
     public User findUserByEmail(String email) {
         return userRepository.findUserByEmail(email);
     }
+
+    public ResponseEntity<?> loginUser(LoginRequest loginRequest) {
+        try {
+            Authentication authentication = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(
+                            loginRequest.getEmail(),
+                            loginRequest.getPassword()
+                    )
+            );
+
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+
+            MyUserDetails myUserDetails =
+                    (MyUserDetails) authentication.getPrincipal();
+            System.out.println("myUserDetails: "+ myUserDetails);
+            final String JWT = jwtUtils.generateJwtToken(myUserDetails);
+            System.out.println("JWT: "+JWT);
+            return ResponseEntity.ok(new LoginResponse(JWT));
+
+        } catch (Exception e) {
+            return ResponseEntity.ok(
+                    new LoginResponse("Error: user name or email is incorrect, " + e)
+
+            );
+        }
+    }
+
 }

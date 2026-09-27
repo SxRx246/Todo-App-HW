@@ -28,7 +28,7 @@ public class CategoryService {
     public Category getCategory(Long id) {
         System.out.println("Service called getCategory() ==>");
         return categoryRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Category not found"));
+                .orElseThrow(() -> new InformationNotFoundException("Category with "+ id +" not found"));
     }
 
     public Category createCategory(Category categoryObject) {
