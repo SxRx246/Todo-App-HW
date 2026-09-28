@@ -3,8 +3,11 @@ package com.ga.items.service;
 import com.ga.items.acception.InformationExistsException;
 import com.ga.items.acception.InformationNotFoundException;
 import com.ga.items.model.Category;
+import com.ga.items.model.User;
 import com.ga.items.repository.CategoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -15,6 +18,9 @@ import java.util.Optional;
 public class CategoryService {
     @Autowired
     private CategoryRepository categoryRepository;
+
+    @Autowired
+    private UserService userService;
 
     public CategoryService(CategoryRepository categoryRepository) {
         this.categoryRepository = categoryRepository;
@@ -38,6 +44,16 @@ public class CategoryService {
         if (category != null) {
             throw new InformationExistsException("category with name " + category.getName() + " already exists");
         } else {
+
+            Authentication authentication =
+                    SecurityContextHolder.getContext().getAuthentication();
+
+            String email = authentication.getName();
+
+            User user = userService.findUserByEmail(email);
+
+            categoryObject.setUser(user);
+
             return categoryRepository.save(categoryObject);
         }
     }

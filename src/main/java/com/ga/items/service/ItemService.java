@@ -3,9 +3,12 @@ package com.ga.items.service;
 import com.ga.items.acception.InformationNotFoundException;
 import com.ga.items.model.Category;
 import com.ga.items.model.Item;
+import com.ga.items.model.User;
 import com.ga.items.repository.CategoryRepository;
 import com.ga.items.repository.ItemRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -17,6 +20,8 @@ public class ItemService {
 
     private CategoryRepository categoryRepository;
 
+    private UserService userService;
+
     public Item createItem(Long categoryId, Item item){
         System.out.println("calling createItem");
         Category category = categoryRepository.findById(categoryId)
@@ -26,6 +31,15 @@ public class ItemService {
                                 ));
 
         item.setCategory(category);
+
+        Authentication authentication =
+                SecurityContextHolder.getContext().getAuthentication();
+
+        String email = authentication.getName();
+
+        User user = userService.findUserByEmail(email);
+
+        item.setUser(user);
 
         return itemRepository.save(item);
     }
